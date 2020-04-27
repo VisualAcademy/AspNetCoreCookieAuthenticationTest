@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DotNetNote
@@ -74,6 +75,24 @@ namespace DotNetNote
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
             return Content("로그아웃되었습니다.");
+        }
+
+        public IActionResult LoginPartial()
+        {
+            string result = "";
+            if (User.Identity.IsAuthenticated)
+            {
+                result = $"<h3>{User.Identity.Name}</h3>";
+                foreach (var claim in User.Claims)
+                {
+                    result += $"{claim.Type} - {claim.Value}<br />";
+                }
+            }
+            else
+            {
+                result = "로그인하지 않았습니다.";
+            }
+            return Content(result, "text/html", Encoding.Default);
         }
     }
 }
